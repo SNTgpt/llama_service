@@ -10,7 +10,7 @@
   },
   "keywords": [
     "llm",
-    "ollama", 
+    "ollama",
     "llava",
     "ai",
     "local",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SNTgpt/llama_service.git"
+    "url": "git+https://github.com/SNTgpt/llama_service.git"
   },
   "homepage": "https://github.com/SNTgpt/llama_service#readme",
   "bugs": {

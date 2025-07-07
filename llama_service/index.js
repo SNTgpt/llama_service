@@ -1,6 +1,7 @@
 // index.js - Versione corretta per Node.js
 import fetch from 'node-fetch';
 import 'dotenv/config';
+import config from './config/configuration.json' assert { type: 'json' };
 
 export class LLMClient {
   constructor(apiKey, model = '') {
@@ -8,18 +9,20 @@ export class LLMClient {
     if (!apiKey) throw new Error("⚠️ API key mancante");
     
     this.apiKey = apiKey;
-    this.host = process.env.LLM_API_HOST;
-    this.model = model || process.env.LLM_MODEL;
+    this.host = config.api.host;
+    this.model = model || config.model.default;
     
     // Validation configurazione
     if (!this.host) throw new Error("⚠️ Host LLM mancante in .env");
     if (!this.model) throw new Error("⚠️ Model mancante");
     
-    if (this.apiKey !== process.env.LLM_API_KEY) {
+    if (this.apiKey !== config.api.key) {
       throw new Error("⚠️ API key errata");
     }
     
-    this.apiUrl = `${this.host}/api/chat`;
+    this.apiUrl = `${this.host}${config.endpoints.chat}`;
+
+    console.log(`🦙 LLM Client inizializzato: ${this.host} (${this.model})`);
   }
 
   async sendPrompt(message, prompt, stream = false) {

@@ -1,4 +1,4 @@
-// index.js - Versione con streaming
+// index.js - Versione corretta per Node.js
 import fetch from 'node-fetch';
 import 'dotenv/config';
 
@@ -67,42 +67,32 @@ export class LLMClient {
     }
   }
 
-  // Metodo per gestire stream response
+  // Metodo per gestire stream response - VERSIONE NODE.JS
   async _handleStreamResponse(response) {
-    const chunks = [];
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        
-        if (done) break;
-        
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n').filter(line => line.trim());
-        
-        for (const line of lines) {
-          try {
-            const json = JSON.parse(line);
-            if (json.message?.content) {
-              chunks.push(json.message.content);
-            }
-          } catch (parseError) {
-            // Ignora righe non JSON nel stream
-            continue;
+    let fullResponse = '';
+    
+    // Node.js streaming con response.body
+    for await (const chunk of response.body) {
+      const chunkStr = chunk.toString();
+      const lines = chunkStr.split('\n').filter(line => line.trim());
+      
+      for (const line of lines) {
+        try {
+          const json = JSON.parse(line);
+          if (json.message?.content) {
+            fullResponse += json.message.content;
           }
+        } catch (parseError) {
+          // Ignora righe non JSON nel stream
+          continue;
         }
       }
-      
-      return chunks.join('');
-      
-    } finally {
-      reader.releaseLock();
     }
+    
+    return fullResponse;
   }
 
-  // Metodo alternativo specifico per streaming
+  // Metodo alternativo specifico per streaming real-time
   async sendPromptStream(message, prompt, onChunk) {
     if (!onChunk || typeof onChunk !== 'function') {
       throw new Error("⚠️ Callback onChunk è richiesta per streaming");
@@ -132,51 +122,41 @@ export class LLMClient {
         throw new Error(`LLM Error ${response.status}: ${text} (${this.host})`);
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
       let fullResponse = '';
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          
-          if (done) break;
-          
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n').filter(line => line.trim());
-          
-          for (const line of lines) {
-            try {
-              const json = JSON.parse(line);
-              if (json.message?.content) {
-                const content = json.message.content;
-                fullResponse += content;
-                
-                // Callback per ogni chunk
-                onChunk({
-                  content,
-                  fullResponse,
-                  isComplete: false
-                });
-              }
-            } catch (parseError) {
-              continue;
+      
+      // Node.js streaming
+      for await (const chunk of response.body) {
+        const chunkStr = chunk.toString();
+        const lines = chunkStr.split('\n').filter(line => line.trim());
+        
+        for (const line of lines) {
+          try {
+            const json = JSON.parse(line);
+            if (json.message?.content) {
+              const content = json.message.content;
+              fullResponse += content;
+              
+              // Callback per ogni chunk
+              onChunk({
+                content,
+                fullResponse,
+                isComplete: false
+              });
             }
+          } catch (parseError) {
+            continue;
           }
         }
-        
-        // Callback finale
-        onChunk({
-          content: '',
-          fullResponse,
-          isComplete: true
-        });
-        
-        return fullResponse;
-        
-      } finally {
-        reader.releaseLock();
       }
+      
+      // Callback finale
+      onChunk({
+        content: '',
+        fullResponse,
+        isComplete: true
+      });
+      
+      return fullResponse;
       
     } catch (error) {
       if (error.code === 'ECONNREFUSED') {

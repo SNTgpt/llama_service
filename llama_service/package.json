@@ -1,5 +1,5 @@
 {
-  "name": "@sntgpt/llama-service",
+  "name": "llama-service-snt",
   "version": "1.0.0",
   "description": "Client Node.js per LLM locali (Ollama/Llava)",
   "main": "index.js",

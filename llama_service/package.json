@@ -1,24 +1,43 @@
 {
-  "name": "llama_service",
+  "name": "@sntgpt/llama-service",
   "version": "1.0.0",
-  "description": "Libreria Node.js per interfacciarsi con un LLM locale (Ollama)",
-  "main": "./index.js",
+  "description": "Client Node.js per LLM locali (Ollama/Llava)",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node examples/usage.js",
-    "test": "echo \"Nessun test ancora definito\" && exit 0"
+    "test": "node test/test.js",
+    "example": "node examples/usage.js"
   },
   "keywords": [
     "llm",
-    "ollama",
+    "ollama", 
+    "llava",
     "ai",
+    "local",
     "client",
-    "chat"
+    "chat",
+    "streaming"
   ],
-  "author": "Marco Paglicci",
+  "author": "Marco Paglicci <marcopaglicci22@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SNTgpt/llama_service.git"
+  },
+  "homepage": "https://github.com/SNTgpt/llama_service#readme",
+  "bugs": {
+    "url": "https://github.com/SNTgpt/llama_service/issues"
+  },
   "dependencies": {
     "dotenv": "^16.6.1",
     "node-fetch": "^3.3.2"
-  }
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ]
 }

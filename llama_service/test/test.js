@@ -1,5 +1,5 @@
 // test.js - Con esempi streaming
-import { LLMClient } from './index.js';
+import { LLMClient } from '../index.js';
 import 'dotenv/config';
 
 const client = new LLMClient(process.env.LLM_API_KEY, 'llava');

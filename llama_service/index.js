@@ -1,7 +1,16 @@
 // index.js - Versione corretta per Node.js
 import fetch from 'node-fetch';
-import 'dotenv/config';
-import config from './config/configuration.json' assert { type: 'json' };
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+// Setup path per ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Carica configurazione
+const configPath = path.join(__dirname, 'config', 'configuration.json');
+const config = JSON.parse(readFileSync(configPath, 'utf8'));
 
 export class LLMClient {
   constructor(apiKey, model = '') {

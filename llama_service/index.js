@@ -37,14 +37,11 @@ export class LLMClient {
 
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  async sendPrompt(message, prompt,image = '', stream = false,) {
+  async sendPrompt(message, prompt,options = {}) {
+    const { image = null, stream = false } = options;
+
     if (!prompt || typeof prompt !== 'string') {
       throw new Error("⚠️ Prompt deve essere una stringa non vuota");
-    }
-
-    if(image)
-    {
-      hasImage = true;
     }
 
     const body = {

@@ -1,0 +1,18 @@
+{
+  "name": "llama_service",
+  "version": "1.0.0",
+  "description": "Libreria Node.js per interfacciarsi con un LLM locale (Ollama)",
+  "main": "./index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node examples/usage.js",
+    "test": "echo \"Nessun test ancora definito\" && exit 0"
+  },
+  "keywords": ["llm", "ollama", "ai", "client", "chat"],
+  "author": "Marco Paglicci",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.3.1"
+  }
+}

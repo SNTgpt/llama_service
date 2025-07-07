@@ -1,0 +1,4 @@
+# Ignora il file delle variabili d'ambiente
+.env
+
+*.log

@@ -34,9 +34,17 @@ export class LLMClient {
     console.log(`🦙 LLM Client inizializzato: ${this.host} (${this.model})`);
   }
 
-  async sendPrompt(message, prompt, stream = false) {
+
+  //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  async sendPrompt(message, prompt,image = '', stream = false,) {
     if (!prompt || typeof prompt !== 'string') {
       throw new Error("⚠️ Prompt deve essere una stringa non vuota");
+    }
+
+    if(image)
+    {
+      hasImage = true;
     }
 
     const body = {
@@ -49,7 +57,18 @@ export class LLMClient {
       body.messages.push({ role: "system", content: prompt });
     }
 
-    body.messages.push({ role: "user", content: message });
+      // Messaggio utente (con o senza immagine)
+    const userMessage = {
+      role: "user",
+      content: message
+    };
+
+    if (image) {
+      userMessage.images = [image];  // deve essere un array
+    }
+
+    body.messages.push(userMessage);
+    
 
     try {
       const response = await fetch(this.apiUrl, {

@@ -1,21 +1,22 @@
 import fetch from 'node-fetch';
 
+import 'dotenv/config';
+
 export class LLMClient {
-  constructor({
-    apiKey,
-    host = 'http://127.0.0.1:11434',
-    model = 'llava'
-  } = {}) {
+  constructor({apiKey,host = '',model = ''} = {}) {
     if (!apiKey) {
       throw new Error("⚠️ Chiave API mancante: fornisci `apiKey` nel costruttore.");
     }
-
-    this.apiKey = apiKey;
+    if(apiKey != process.env.LLM_API_KEY)
+    {
+      throw new Error("⚠️ Chiave API errata : fornisci `apiKey` corretta .");
+    }
+    this.host = process.env.LLM_API_HOST;
     this.apiUrl = `${host}/api/chat`;
-    this.model = model;
+    this.model = process.env.LLM_MODEL;
   }
 
-  async sendPrompt(prompt) {
+  async sendPrompt(message, prompt, stream = false) {
     if (!prompt || typeof prompt !== 'string') {
       throw new Error("⚠️ Prompt non valido: deve essere una stringa non vuota.");
     }
@@ -25,8 +26,10 @@ export class LLMClient {
       stream: false,
       messages: [
         {
+          system : prompt,
           role: "user",
-          content: prompt
+          content: message,
+          stream: stream
         }
       ]
     };
@@ -34,8 +37,7 @@ export class LLMClient {
     const response = await fetch(this.apiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${this.apiKey}`
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
     });

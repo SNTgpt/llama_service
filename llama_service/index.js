@@ -38,7 +38,7 @@ export class LLMClient {
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   async sendPrompt(message, prompt,options = {}) {
-    const { image = null, stream = false } = options;
+    const { image = null, stream = false, messages = [] } = options;
 
     if (!prompt || typeof prompt !== 'string') {
       throw new Error("⚠️ Prompt deve essere una stringa non vuota");
@@ -47,7 +47,7 @@ export class LLMClient {
     const body = {
       model: this.model,
       stream: stream,
-      messages: []
+      messages: messages
     };
 
     if (prompt) {

@@ -1,12 +1,11 @@
 {
   "name": "llama-service-snt",
-  "version": "1.2.5",
-  "description": "Client Node.js per LLM locali (Ollama/Llava)",
+  "version": "2.0.0",
+  "description": "Client Node.js modulare per LLM locali (Ollama/Llava)",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node test/test.js",
-    "example": "node examples/usage.js"
+    "test": "node test/test.js"
   },
   "keywords": [
     "llm",
@@ -16,9 +15,10 @@
     "local",
     "client",
     "chat",
-    "streaming"
+    "streaming",
+    "modular"
   ],
-  "author": "Marco Paglicci <marcopaglicci22@gmail.com>",
+  "author": "Marco Paglicci <m.paglicci@sntinformatica.it>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -29,7 +29,6 @@
     "url": "https://github.com/SNTgpt/llama_service/issues"
   },
   "dependencies": {
-    "dotenv": "^16.6.1",
     "node-fetch": "^3.3.2"
   },
   "engines": {
@@ -37,8 +36,9 @@
   },
   "files": [
     "index.js",
-    "README.md",
+    "src/",
     "config/",
+    "README.md",
     "LICENSE"
   ]
 }

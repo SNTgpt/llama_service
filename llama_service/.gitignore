@@ -9,5 +9,4 @@ node_modules/
 .DS_Store
 dist/
 coverage/
-
 config/

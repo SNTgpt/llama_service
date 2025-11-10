@@ -1,48 +1,138 @@
-// test.js - Con esempi streaming
+// test/test.js
 import { LLMClient } from '../index.js';
-import 'dotenv/config';
 
-const client = new LLMClient(process.env.LLM_API_KEY, 'llava');
+const API_KEY = 'sk-20258377';
+
+console.log("🧪 ===== TEST SUITE LLAMA SERVICE =====\n");
 
 (async () => {
-  console.log("🧪 Test 1: Risposta normale");
   try {
-    const risposta = await client.sendPrompt(
-      "Ciao, chi sei?",
-      "Sei un assistente utile",
-      false // No streaming
-    );
-    console.log("✅ Risposta:", risposta);
-  } catch (err) {
-    console.error("❌ Errore:", err.message);
-  }
+    // Inizializza client
+    const client = new LLMClient(API_KEY);
+    console.log("✅ Client inizializzato correttamente\n");
 
-  console.log("\n🧪 Test 2: Streaming con sendPrompt");
-  try {
-    const rispostaStream = await client.sendPrompt(
-      "Raccontami una storia breve",
-      "Sei un narratore creativo",
-      true // Con streaming
-    );
-    console.log("✅ Risposta completa streaming:", rispostaStream);
-  } catch (err) {
-    console.error("❌ Errore streaming:", err.message);
-  }
+    // ========================================
+    // TEST 1: Prompt Base
+    // ========================================
+    console.log("🧪 Test 1: Prompt base");
+    try {
+      const risposta1 = await client.send("Ciao, chi sei?");
+      console.log("✅ Risposta:", risposta1.substring(0, 100) + "...");
+    } catch (err) {
+      console.error("❌ Errore:", err.message);
+    }
 
-  console.log("\n🧪 Test 3: Streaming real-time con callback");
-  try {
-    await client.sendPromptStream(
-      "Conta da 1 a 5 lentamente",
-      "Conta numero per numero",
-      (chunk) => {
-        if (chunk.isComplete) {
-          console.log("✅ Streaming completato!");
-        } else {
-          process.stdout.write(chunk.content); // Real-time output
+    console.log("\n---\n");
+
+    // ========================================
+    // TEST 2: Prompt con System Prompt
+    // ========================================
+    console.log("🧪 Test 2: Prompt con system prompt");
+    try {
+      const risposta2 = await client.send("Qual è la capitale d'Italia?", {
+        systemPrompt: "Rispondi in modo conciso, massimo 10 parole"
+      });
+      console.log("✅ Risposta:", risposta2);
+    } catch (err) {
+      console.error("❌ Errore:", err.message);
+    }
+
+    console.log("\n---\n");
+
+    // ========================================
+    // TEST 3: Streaming con callback
+    // ========================================
+    console.log("🧪 Test 3: Streaming real-time");
+    try {
+      process.stdout.write("✅ Output streaming: ");
+      await client.sendStream("Conta da 1 a 5", {
+        systemPrompt: "Conta solo i numeri, uno per riga",
+        onChunk: (chunk) => {
+          if (chunk.isComplete) {
+            console.log("\n✅ Streaming completato!");
+          } else {
+            process.stdout.write(chunk.content);
+          }
         }
-      }
-    );
-  } catch (err) {
-    console.error("❌ Errore streaming callback:", err.message);
+      });
+    } catch (err) {
+      console.error("❌ Errore:", err.message);
+    }
+
+    console.log("\n---\n");
+
+    // ========================================
+    // TEST 4: Streaming senza callback
+    // ========================================
+    console.log("🧪 Test 4: Streaming senza callback (risposta completa)");
+    try {
+      const risposta4 = await client.sendStream("Dimmi 3 colori primari", {
+        systemPrompt: "Elenca solo i nomi, separati da virgola"
+      });
+      console.log("✅ Risposta completa:", risposta4);
+    } catch (err) {
+      console.error("❌ Errore:", err.message);
+    }
+
+    console.log("\n---\n");
+
+    // ========================================
+    // TEST 5: Immagine Base64 (mock)
+    // ========================================
+    console.log("🧪 Test 5: Invio con immagine base64");
+    console.log("ℹ️  Nota: Questo test usa un'immagine mock. Per testare realmente,");
+    console.log("    sostituisci 'mockBase64' con una vera stringa base64.");
+    
+    try {
+      // Mock base64 (sostituisci con vera immagine per test reale)
+      const mockBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+      
+      const risposta5 = await client.sendWithImage(
+        "Cosa vedi in questa immagine?",
+        mockBase64,
+        {
+          systemPrompt: "Descrivi l'immagine in dettaglio"
+        }
+      );
+      console.log("✅ Risposta:", risposta5.substring(0, 100) + "...");
+    } catch (err) {
+      console.error("❌ Errore:", err.message);
+      console.log("ℹ️  Normale se il modello non supporta immagini o base64 è invalido");
+    }
+
+    console.log("\n---\n");
+
+    // ========================================
+    // TEST 6: Conversazione multi-turno
+    // ========================================
+    console.log("🧪 Test 6: Conversazione multi-turno");
+    try {
+      const messages = [];
+      
+      // Turno 1
+      const turno1 = await client.send("Mi chiamo Marco", {
+        systemPrompt: "Sei un assistente che ricorda le informazioni",
+        messages: messages
+      });
+      messages.push({ role: "user", content: "Mi chiamo Marco" });
+      messages.push({ role: "assistant", content: turno1 });
+      console.log("✅ Turno 1:", turno1.substring(0, 80) + "...");
+      
+      // Turno 2
+      const turno2 = await client.send("Come mi chiamo?", {
+        systemPrompt: "Sei un assistente che ricorda le informazioni",
+        messages: messages
+      });
+      console.log("✅ Turno 2:", turno2);
+      
+    } catch (err) {
+      console.error("❌ Errore:", err.message);
+    }
+
+    console.log("\n\n🎉 ===== TEST COMPLETATI =====");
+
+  } catch (error) {
+    console.error("\n💥 Errore fatale:", error.message);
+    process.exit(1);
   }
 })();

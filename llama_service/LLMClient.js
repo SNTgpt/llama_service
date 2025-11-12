@@ -3,6 +3,7 @@ import { Connection } from './core/Connection.js';
 import { PromptHandler } from './handlers/PromptHandler.js';
 import { StreamHandler } from './handlers/StreamHandler.js';
 import { ImageHandler } from './handlers/ImageHandler.js';
+import { ToolHandler } from './handlers/ToolHandler.js'; 
 
 export class LLMClient {
   constructor(apiKey, model = null) {
@@ -13,6 +14,7 @@ export class LLMClient {
     this.promptHandler = new PromptHandler(this.connection);
     this.streamHandler = new StreamHandler(this.connection);
     this.imageHandler = new ImageHandler(this.connection);
+    this.toolHandler = new ToolHandler(this.connection);
   }
 
   /**
@@ -44,5 +46,15 @@ export class LLMClient {
    */
   async sendWithImage(message, base64Image, options = {}) {
     return await this.imageHandler.sendWithImage(message, base64Image, options);
+  }
+
+  /**
+   * Invia un prompt con tool calling support
+   * @param {string} message - Il messaggio da inviare
+   * @param {Object} options - Opzioni: { systemPrompt, messages, tools, onToolCall, maxIterations }
+   * @returns {Promise<{content: string, toolCalls: Array, iterations: number}>}
+   */
+  async sendWithTools(message, options = {}) {
+    return await this.toolHandler.sendWithTools(message, options);
   }
 }

@@ -16,8 +16,8 @@ console.log("🧪 ===== TEST SUITE LLAMA SERVICE =====\n");
     // ========================================
     console.log("🧪 Test 1: Prompt base");
     try {
-      const risposta1 = await client.send("Ciao, chi sei?");
-      console.log("✅ Risposta:", risposta1.substring(0, 100) + "...");
+      const risposta1 = await client.send("Ciao, chi sei? Che modello di LLM sei ? ");
+      console.log("✅ Risposta:", risposta1.substring(0, 1000) + "...");
     } catch (err) {
       console.error("❌ Errore:", err.message);
     }

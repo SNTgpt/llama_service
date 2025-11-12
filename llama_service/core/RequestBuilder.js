@@ -15,7 +15,8 @@ export class RequestBuilder {
       systemPrompt = null, 
       image = null, 
       stream = false,
-      messages = [] 
+      messages = [],
+      tools = []
     } = options;
 
     const payload = {
@@ -44,6 +45,11 @@ export class RequestBuilder {
     }
 
     payload.messages.push(userMessage);
+
+    // Aggiungi tools se presenti 
+    if (tools && tools.length > 0) {
+      payload.tools = tools;
+    }
 
     return payload;
   }

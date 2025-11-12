@@ -1,6 +1,6 @@
 {
   "name": "llama-service-snt",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Client Node.js modulare per LLM locali (Ollama/Llava)",
   "main": "index.js",
   "type": "module",

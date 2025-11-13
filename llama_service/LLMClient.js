@@ -1,20 +1,22 @@
 // src/LLMClient.js
-import { Connection } from './core/Connection.js';
-import { PromptHandler } from './handlers/PromptHandler.js';
-import { StreamHandler } from './handlers/StreamHandler.js';
-import { ImageHandler } from './handlers/ImageHandler.js';
-import { ToolHandler } from './handlers/ToolHandler.js'; 
+import { Connection } from './src/core/Connection.js';
+import { PromptHandler } from './src/handlers/PromptHandler.js';
+import { StreamHandler } from './src/handlers/StreamHandler.js';
+import { ImageHandler } from './src/handlers/ImageHandler.js';
+import { ToolHandler } from './src/handlers/ToolHandler.js'; 
 
 export class LLMClient {
-  constructor(apiKey, model = null) {
+  constructor(apiKey,internal = false, model = null) {
     // Inizializza connessione
-    this.connection = new Connection(apiKey, model);
+    this.connection = new Connection(apiKey, model, internal);
+    console.log(`​🔗​ Connessione ottenuta`);
     
     // Inizializza handlers
     this.promptHandler = new PromptHandler(this.connection);
     this.streamHandler = new StreamHandler(this.connection);
     this.imageHandler = new ImageHandler(this.connection);
     this.toolHandler = new ToolHandler(this.connection);
+    console.log(`💽 ​​Handler Configurati`);
   }
 
   /**
@@ -24,6 +26,7 @@ export class LLMClient {
    * @returns {Promise<string>} - Risposta del modello
    */
   async send(message, options = {}) {
+    console.log(`Invio messaggio -> {${message}} ...`);
     return await this.promptHandler.send(message, options);
   }
 
@@ -34,6 +37,7 @@ export class LLMClient {
    * @returns {Promise<string>} - Risposta completa del modello
    */
   async sendStream(message, options = {}) {
+    console.log(`Invio messaggio in stream ... `);
     return await this.streamHandler.sendStream(message, options);
   }
 
@@ -45,6 +49,7 @@ export class LLMClient {
    * @returns {Promise<string>} - Risposta del modello
    */
   async sendWithImage(message, base64Image, options = {}) {
+    console.log(`Invio messaggio & immagine  -> {${message}} ... `);
     return await this.imageHandler.sendWithImage(message, base64Image, options);
   }
 
@@ -55,6 +60,7 @@ export class LLMClient {
    * @returns {Promise<{content: string, toolCalls: Array, iterations: number}>}
    */
   async sendWithTools(message, options = {}) {
+    console.log(`Invio messaggio & esecuzione tools -> {${message}} ... `);
     return await this.toolHandler.sendWithTools(message, options);
   }
 }

@@ -8,7 +8,7 @@ console.log("🧪 ===== TEST SUITE LLAMA SERVICE =====\n");
 (async () => {
   try {
     // Inizializza client
-    const client = new LLMClient(API_KEY);
+    const client = new LLMClient(API_KEY,true);
     console.log("✅ Client inizializzato correttamente\n");
 
     // ========================================

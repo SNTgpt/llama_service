@@ -51,6 +51,7 @@ export class RequestBuilder {
       payload.tools = tools;
     }
 
+    console.log(`​🚚​ Payload costruito {${payload}}`);
     return payload;
   }
 }

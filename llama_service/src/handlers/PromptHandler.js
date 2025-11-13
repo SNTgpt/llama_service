@@ -23,6 +23,8 @@ export class PromptHandler {
     );
 
     // Esegui richiesta
+    console.log(`-----------------------------`);
+    console.log(`​Invio richiesta a gwen ... `);
     try {
       const response = await fetch(this.connection.getApiUrl(), {
         method: "POST",
@@ -35,6 +37,8 @@ export class PromptHandler {
         throw new Error(`LLM Error ${response.status}: ${text}`);
       }
 
+      console.log(`✅​ Risposta ottenuta .... `);
+      console.log(`-----------------------------`);
       const json = await response.json();
       return json?.message?.content || "";
 

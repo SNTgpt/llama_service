@@ -15,21 +15,26 @@ import { Validator } from '../utils/Validator.js';
 
 
 export class Connection {
-  constructor(apiKey, model = null) {
+  constructor(apiKey, model = null, internal = false) {
     // Carica configurazione
     const config = ConfigLoader.load();
     
     // Valida API key
     Validator.validateApiKey(apiKey, config.apiKey);
     
-    // Imposta proprietà
-    this.host = config.host;
+    if (internal)
+    {
+      this.host = 'http://192.168.251.67:11434' || config.host;
+    }else{
+      this.host = config.host;
+    }
+
     this.model = model || config.model;
     this.endpoint = config.endpoint;
     this.timeout = config.timeout;
     this.apiUrl = `${this.host}${this.endpoint}`;
     
-    console.log(`🦙 Connesso a: ${this.host} (${this.model})`);
+    console.log(`🦙 Impostata connesione a: ${this.host} (${this.model})`);
   }
 
   getApiUrl() {
